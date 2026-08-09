@@ -14,6 +14,158 @@ public:
     bool isIssued;
 };
 
+void saveBooks(const vector<Book> &books)
+{
+    ofstream MyFile("books.txt");
+    for (const auto &b : books)
+    {
+        MyFile << b.id << "|" << b.name << "|" << b.author << "|";
+        if (b.isIssued)
+            MyFile << "1";
+        else
+            MyFile << "0";
+        MyFile << endl;
+    }
+    MyFile.close();
+}
+
+void addBook(vector<Book> &books)
+{
+    Book b1;
+    cout << "Enter Book ID: ";
+    cin >> b1.id;
+    cin.ignore();
+    cout << "Enter Book Name: ";
+    getline(cin, b1.name);
+    cout << "Enter Book Author: ";
+    getline(cin, b1.author);
+    cout << endl;
+    b1.isIssued = false;
+    books.push_back(b1);
+    saveBooks(books);
+    cout << "Book added successfully!" << endl;
+}
+
+void displayBooks(const vector<Book> &books)
+{
+    for (int i = 0; i < books.size(); i++)
+    {
+        cout << "Book ID: " << books[i].id << endl;
+        cout << "Book Name: " << books[i].name << endl;
+        cout << "Author: " << books[i].author << endl;
+        if (books[i].isIssued)
+            cout << "Status: Issued" << endl;
+        else
+            cout << "Status: Available" << endl;
+        cout << endl;
+    }
+}
+
+void searchBook(const vector<Book> &books)
+{
+    int searchId;
+    bool found = false;
+    cout << "Enter Book ID: ";
+    cin >> searchId;
+    for (Book b : books)
+    {
+        if (b.id == searchId)
+        {
+            cout << "Book found!" << endl
+                 << endl;
+            cout << "Book ID: " << b.id << endl;
+            cout << "Book Name: " << b.name << endl;
+            cout << "Author: " << b.author << endl;
+            found = true;
+            break;
+        }
+    }
+    if (found == false)
+        cout << "Book not found" << endl;
+}
+
+void issueBook(vector<Book> &books)
+{
+    int searchId;
+    bool found = false;
+    cout << "Enter Book ID: ";
+    cin >> searchId;
+    for (auto &b : books)
+    {
+        if (b.id == searchId)
+        {
+            found = true;
+            if (!b.isIssued)
+            {
+                cout << "Book issued successfully!" << endl
+                     << endl;
+                b.isIssued = true;
+                saveBooks(books);
+                break;
+            }
+            else
+            {
+                cout << "Book is already issued" << endl
+                     << endl;
+                break;
+            }
+        }
+    }
+    if (!found)
+        cout << "\nBook not found" << endl;
+}
+
+void returnBook(vector<Book> &books)
+{
+    bool found = false;
+    int searchId;
+    cout << "Enter book ID: ";
+    cin >> searchId;
+    for (auto &b : books)
+    {
+        if (b.id == searchId)
+        {
+            found = true;
+            if (!b.isIssued)
+            {
+                cout << "Book is not currently issued. " << endl;
+                break;
+            }
+            else
+            {
+                b.isIssued = false;
+                cout << "Book returned successfully!" << endl;
+                saveBooks(books);
+                break;
+            }
+        }
+    }
+    if (!found)
+        cout << "Book not found." << endl;
+}
+
+void removeBook(vector<Book> &books)
+{
+    bool found = false;
+    int searchId;
+    cout << "\nEnter Book ID: ";
+    cin >> searchId;
+
+    for (int i = 0; i < books.size(); i++)
+    {
+        if (books[i].id == searchId)
+        {
+            found = true;
+            books.erase(books.begin() + i);
+            cout << "\nBook removed successfully!" << endl;
+            saveBooks(books);
+            break;
+        }
+    }
+    if (found == false)
+        cout << "\nBook not found." << endl;
+}
+
 void loadBooks(vector<Book> &books)
 {
     string line;
@@ -41,23 +193,8 @@ void loadBooks(vector<Book> &books)
         // else
         //     b.isIssued = true;
         b.isIssued = (status == "1");
-        
-        books.push_back(b);
-    }
-    MyFile.close();
-}
 
-void saveBooks(const vector<Book> &books)
-{
-    ofstream MyFile("books.txt");
-    for (const auto &b : books)
-    {
-        MyFile << b.id << "|" << b.name << "|" << b.author << "|";
-        if (b.isIssued)
-            MyFile << "1";
-        else
-            MyFile << "0";
-        MyFile << endl;
+        books.push_back(b);
     }
     MyFile.close();
 }
@@ -90,144 +227,32 @@ int main()
              << endl;
         if (choice == 1)
         {
-            Book b1;
-            cout << "Enter Book ID: ";
-            cin >> b1.id;
-            cin.ignore();
-            cout << "Enter Book Name: ";
-            getline(cin, b1.name);
-            cout << "Enter Book Author: ";
-            getline(cin, b1.author);
-            cout << endl;
-            b1.isIssued = false;
-            books.push_back(b1);
-            saveBooks(books);
-            cout << "Book added successfully!" << endl;
+            addBook(books);
         }
         else if (choice == 2)
         {
-            for (int i = 0; i < books.size(); i++)
-            {
-                cout << "Book ID: " << books[i].id << endl;
-                cout << "Book Name: " << books[i].name << endl;
-                cout << "Author: " << books[i].author << endl;
-                if (books[i].isIssued)
-                    cout << "Status: Issued" << endl;
-                else
-                    cout << "Status: Available" << endl;
-                cout << endl;
-            }
+            displayBooks(books);
         }
         else if (choice == 3)
         {
-            int searchId;
-            bool found = false;
-            cout << "Enter Book ID: ";
-            cin >> searchId;
-            for (Book b : books)
-            {
-                if (b.id == searchId)
-                {
-                    cout << "Book found!" << endl
-                         << endl;
-                    cout << "Book ID: " << b.id << endl;
-                    cout << "Book Name: " << b.name << endl;
-                    cout << "Author: " << b.author << endl;
-                    found = true;
-                    break;
-                }
-            }
-            if (found == false)
-                cout << "Book not found" << endl;
+            searchBook(books);
         }
         else if (choice == 4)
         {
-            int searchId;
-            bool found = false;
-            cout << "Enter Book ID: ";
-            cin >> searchId;
-            for (auto &b : books)
-            {
-                if (b.id == searchId)
-                {
-                    found = true;
-                    if (!b.isIssued)
-                    {
-                        cout << "Book issued successfully!" << endl
-                             << endl;
-                        b.isIssued = true;
-                        saveBooks(books);
-                        break;
-                    }
-                    else
-                    {
-                        cout << "Book is already issued" << endl
-                             << endl;
-                        break;
-                    }
-                }
-            }
-            if (!found)
-                cout << "\nBook not found" << endl;
+            issueBook(books);
         }
-
         else if (choice == 5)
         {
-            bool found = false;
-            int searchId;
-            cout << "Enter book ID: ";
-            cin >> searchId;
-            for (auto &b : books)
-            {
-                if (b.id == searchId)
-                {
-                    found = true;
-                    if (!b.isIssued)
-                    {
-                        cout << "Book is not currently issued. " << endl;
-                        break;
-                    }
-                    else
-                    {
-                        b.isIssued = false;
-                        cout << "Book returned successfully!" << endl;
-                        saveBooks(books);
-                        break;
-                    }
-                }
-            }
-            if (!found)
-                cout << "Book not found." << endl;
+            returnBook(books);
         }
-
         else if (choice == 6)
         {
-            bool found = false;
-            int searchId;
-            cout << "\nEnter Book ID: ";
-            cin >> searchId;
-
-            for (int i = 0; i < books.size(); i++)
-            {
-                if (books[i].id == searchId)
-                {
-                    found = true;
-                    books.erase(books.begin() + i);
-                    cout << "\nBook removed successfully!" << endl;
-                    saveBooks(books);
-                    break;
-                }
-            }
-            if (found == false)
-                cout << "\nBook not found." << endl;
+            removeBook(books);
         }
-
         else if (choice == 7)
-            cout
-                << "Exiting..." << endl;
+            cout << "Exiting..." << endl;
         else
             cout << "Invalid choice" << endl;
-
     } while (choice != 7);
 
     return 0;
