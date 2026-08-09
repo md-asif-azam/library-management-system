@@ -9,6 +9,7 @@ public:
     int id;
     string name;
     string author;
+    bool isIssued;
 };
 
 int main()
@@ -47,6 +48,9 @@ int main()
             cout << "Enter Book Author: ";
             getline(cin, b1.author);
             cout << endl;
+
+            b1.isIssued = false;
+
             books.push_back(b1);
             cout << "Book added successfully!" << endl;
         }
@@ -76,9 +80,29 @@ int main()
             if(found == false)
                 cout << "Book not found" << endl;
         }
-        else if (choice == 4)
-            cout
-                << "Issue Book selected" << endl;
+        else if (choice == 4) {
+            int searchId;
+            bool found = false;
+            cout << "Enter Book ID: ";
+            cin >> searchId;
+            for(auto &b : books) {
+                if(b.id == searchId) {
+                    found = true;
+                    if(!b.isIssued) {
+                        cout << "Book issued successfully!" << endl << endl;
+                        b.isIssued = true;
+                        break;
+                    }
+                    else {
+                        cout << "Book is already issued" << endl << endl;
+                        break;
+                    }
+                }
+            }
+            if(!found)
+                cout << "\nBook not found" << endl;
+        }
+            
         else if (choice == 5)
             cout
                 << "Return Book selected" << endl;
