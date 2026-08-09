@@ -34,6 +34,10 @@ int getValidInt()
 void saveBooks(const vector<Book> &books)
 {
     ofstream MyFile("books.txt");
+    if(!MyFile) {
+        cout << "File couldn't be opened" << endl;
+        return;
+    }
     for (const auto &b : books)
     {
         MyFile << b.id << "|" << b.name << "|" << b.author << "|";
@@ -78,12 +82,17 @@ void addBook(vector<Book> &books)
 
 void displayBooks(const vector<Book> &books)
 {
-    for (int i = 0; i < books.size(); i++)
+    if (books.empty())
     {
-        cout << "Book ID: " << books[i].id << endl;
-        cout << "Book Name: " << books[i].name << endl;
-        cout << "Author: " << books[i].author << endl;
-        if (books[i].isIssued)
+        cout << "No books available." << endl;
+        return;
+    }
+    for (const auto &b : books)
+    {
+        cout << "Book ID: " << b.id << endl;
+        cout << "Book Name: " << b.name << endl;
+        cout << "Author: " << b.author << endl;
+        if (b.isIssued)
             cout << "Status: Issued" << endl;
         else
             cout << "Status: Available" << endl;
@@ -200,6 +209,10 @@ void loadBooks(vector<Book> &books)
 {
     string line;
     ifstream MyFile("books.txt");
+    if(!MyFile) {
+        cout << "No existing library data found. Starting with an empty library." << endl;
+        return;
+    }
     while (getline(MyFile, line))
     {
         Book b;
