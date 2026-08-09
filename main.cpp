@@ -14,6 +14,23 @@ public:
     bool isIssued;
 };
 
+int getValidInt()
+{
+    int num;
+    while (true)
+    {
+        cin >> num;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid input. Enter a number: " << endl;
+        }
+        else
+            return num;
+    }
+}
+
 void saveBooks(const vector<Book> &books)
 {
     ofstream MyFile("books.txt");
@@ -31,19 +48,32 @@ void saveBooks(const vector<Book> &books)
 
 void addBook(vector<Book> &books)
 {
+    bool dup = false;
     Book b1;
     cout << "Enter Book ID: ";
-    cin >> b1.id;
-    cin.ignore();
-    cout << "Enter Book Name: ";
-    getline(cin, b1.name);
-    cout << "Enter Book Author: ";
-    getline(cin, b1.author);
-    cout << endl;
-    b1.isIssued = false;
-    books.push_back(b1);
-    saveBooks(books);
-    cout << "Book added successfully!" << endl;
+    b1.id = getValidInt();
+    for (const auto &b : books)
+    {
+        if (b.id == b1.id)
+        {
+            cout << "Book ID already exists!" << endl;
+            dup = true;
+            break;
+        }
+    }
+    if (!dup)
+    {
+        cin.ignore();
+        cout << "Enter Book Name: ";
+        getline(cin, b1.name);
+        cout << "Enter Book Author: ";
+        getline(cin, b1.author);
+        cout << endl;
+        b1.isIssued = false;
+        books.push_back(b1);
+        saveBooks(books);
+        cout << "Book added successfully!" << endl;
+    }
 }
 
 void displayBooks(const vector<Book> &books)
@@ -66,7 +96,7 @@ void searchBook(const vector<Book> &books)
     int searchId;
     bool found = false;
     cout << "Enter Book ID: ";
-    cin >> searchId;
+    searchId = getValidInt();
     for (Book b : books)
     {
         if (b.id == searchId)
@@ -89,7 +119,7 @@ void issueBook(vector<Book> &books)
     int searchId;
     bool found = false;
     cout << "Enter Book ID: ";
-    cin >> searchId;
+    searchId = getValidInt();
     for (auto &b : books)
     {
         if (b.id == searchId)
@@ -120,7 +150,7 @@ void returnBook(vector<Book> &books)
     bool found = false;
     int searchId;
     cout << "Enter book ID: ";
-    cin >> searchId;
+    searchId = getValidInt();
     for (auto &b : books)
     {
         if (b.id == searchId)
@@ -149,7 +179,7 @@ void removeBook(vector<Book> &books)
     bool found = false;
     int searchId;
     cout << "\nEnter Book ID: ";
-    cin >> searchId;
+    searchId = getValidInt();
 
     for (int i = 0; i < books.size(); i++)
     {
@@ -221,7 +251,7 @@ int main()
         cout << "7. Exit\n";
 
         cout << "\nEnter your choice: ";
-        cin >> choice;
+        choice = getValidInt();
 
         cout << "\nYou selected option: " << choice << endl
              << endl;
