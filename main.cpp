@@ -82,9 +82,24 @@ int main()
         else if (choice == 5)
             cout
                 << "Return Book selected" << endl;
-        else if (choice == 6)
-            cout
-                << "Remove Book selected" << endl;
+        else if (choice == 6) {
+            bool found = false;
+            int searchId;
+            cout << "\nEnter Book ID: ";
+            cin >> searchId;
+
+            for(int i=0; i<books.size(); i++) {
+                if(books[i].id == searchId) {
+                    found = true;
+                    books.erase(books.begin()+i);
+                    cout << "\nBook removed successfully!" << endl;
+                    break;
+                }
+            }
+            if(found == false)
+                cout << "\nBook not found." << endl;
+        }
+            
         else if (choice == 7)
             cout
                 << "Exiting..." << endl;
