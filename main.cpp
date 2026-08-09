@@ -35,11 +35,10 @@ int main()
         cout << "\nEnter your choice: ";
         cin >> choice;
 
-        cout << "\nYou selected option: " << choice << endl;
+        cout << "\nYou selected option: " << choice << endl << endl;
         if (choice == 1)
         {
             Book b1;
-            cout << "Add Book selected" << endl;
             cout << "Enter Book ID: ";
             cin >> b1.id;
             cin.ignore();
@@ -59,6 +58,10 @@ int main()
                 cout << "Book ID: " << books[i].id << endl;
                 cout << "Book Name: " << books[i].name << endl;
                 cout << "Author: " << books[i].author << endl;
+                if(books[i].isIssued)
+                    cout << "Status: Issued" << endl;
+                else    
+                    cout << "Status: Available" << endl;
                 cout << endl;
             }
         }
@@ -103,9 +106,29 @@ int main()
                 cout << "\nBook not found" << endl;
         }
             
-        else if (choice == 5)
-            cout
-                << "Return Book selected" << endl;
+        else if (choice == 5) {
+            bool found = false;
+            int searchId;
+            cout << "Enter book ID: ";
+            cin >> searchId;
+            for(auto &b : books) {
+                if(b.id == searchId) {
+                    found = true;
+                    if(!b.isIssued) {
+                        cout << "Book is not currently issued. " << endl;
+                        break;
+                    }
+                    else {
+                        b.isIssued = false;
+                        cout << "Book returned successfully!" << endl;
+                        break;
+                    }
+                }
+            }
+            if(!found)
+                cout << "Book not found." << endl;
+        }
+            
         else if (choice == 6) {
             bool found = false;
             int searchId;
